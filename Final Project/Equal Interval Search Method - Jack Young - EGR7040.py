@@ -47,6 +47,8 @@ def line_search_equal_interval(fun, xk, dk):
         iter = iter + 1
         a_opt = (UB + LB) / 2
         print(a_opt)
+    ax.plot(a_opt, min(ys), 'ro')
+    fig.set_size_inches(18.5, 10.5)
     show()
     iter = iter
 
