@@ -6,8 +6,11 @@ def fun(x):
     y=(x[0]+x[1])**2+(x[1]+x[2])**2;
     return y
 
-def line_search_equal_interval(fun, xk, dk):
 
+from matplotlib import *
+
+
+def line_search_equal_interval(fun, xk, dk, LB, UB):
     from numpy import arange
     from numpy import append
     from matplotlib.pyplot import subplots
@@ -15,9 +18,18 @@ def line_search_equal_interval(fun, xk, dk):
     from matplotlib.pyplot import show
     from matplotlib.pyplot import xlabel
     from matplotlib.pyplot import ylabel
+    from matplotlib.pyplot import legend
+    from matplotlib.pyplot import title
+    from matplotlib.pyplot import tick_params
+    from matplotlib.pyplot import grid
+    from matplotlib.pyplot import ylim
+    from matplotlib.pyplot import xlim
+    from matplotlib.pyplot import xticks
+    from matplotlib.pyplot import yticks
+
     fig, ax = subplots()
-    LB = .1
-    UB = .5
+    xmin = LB
+    xmax = UB
     delta = .01
     r = .2
     epsilon_tolerance = .00001
@@ -27,13 +39,17 @@ def line_search_equal_interval(fun, xk, dk):
     sn = len(as1)
     sn = arange(0, sn, 1)
     ys = []
+
     for i in sn:
         yi = func_a(fun, dk, xk, as1[i])
         ys = append(ys, yi)
     CS = ax.plot(as1, ys)
 
-    xlabel('x')
-    ylabel('f(x)')
+    xlabel('x', fontsize=24, y=1.02)
+    ylabel('f(x)', fontsize=24)
+    title('Equal Interval Search Method Optimization technique', fontsize=24, y=1.02)
+    tick_params(labelsize=24, pad=6)
+    grid()
 
     while not (aopt_found == 1):
         (new_LB, new_UB) = bound_search(fun, xk, dk, LB, UB, delta)
@@ -47,9 +63,24 @@ def line_search_equal_interval(fun, xk, dk):
         iter = iter + 1
         a_opt = (UB + LB) / 2
         print(a_opt)
-    ax.plot(a_opt, min(ys), 'ro')
+        ax.plot(UB, min(ys), 'b|', LB, min(ys), 'b|', markersize=20)
+    ax.plot(a_opt, min(ys), 'ro', label='optimal design point')
+
+    # Plot formatting
+    legend(loc=0, fontsize=24)
     fig.set_size_inches(18.5, 10.5)
+    xmax = max(as1)
+    xtickstepsize = (xmax) / 10
+    # xticks(arange(xmin,xmax,step=xtickstepsize),rotation=30)
+    ymin = min(ys)
+    ymax = max(ys)
+    ytickstepsize = ymax / 10
+    yticks(arange(ymin, ymax, ytickstepsize))
+    xlim(xmin, xmax)
+    ylim(ymin - ytickstepsize, ymax)
     show()
+    # end plot formatting
+
     iter = iter
 
     return a_opt, iter
@@ -79,4 +110,8 @@ def func_a(fun,dk,xk,ai):
     fi= fun(xi)
     return fi
 
-line_search_equal_interval(fun,[1,1,1],[-4,-8,-4])
+#line_search_equal_interval(function,xk,dk,LB,UB)
+
+#uncomment line below to test function without calling externally
+#line_search_equal_interval(fun,[1,1,1],[-4,-8,-4],0,1)
+
